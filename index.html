@@ -1,262 +1,168 @@
+String pagina = R"===(
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
     <meta charset="UTF-8">
-    <!-- Metatag viewport otimizada para mobile, impedindo zoom e scroll acidental -->
+    <!-- Defina a metatag viewport para impedir o zoom -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Robô Wireless - Controle Moderno</title>
     <style>
-        /* Reset e variáveis CSS para tema moderno */
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #1a1a1a;
-            --accent: #00d4ff;
-            --accent-hover: #00a8cc;
-            --text: #ffffff;
-            --shadow: rgba(0, 212, 255, 0.3);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow: hidden;
+            text-align: center;
         }
 
-        /* Prevenção de seleção e toque */
         .prevent-select {
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+        }        
+
+        .joystick-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
         }
 
-        /* Cabeçalho com gradiente e glow */
-        header {
+        .joystick-cell {
+            width: 33.33%;
             text-align: center;
-            margin-bottom: 40px;
+            vertical-align: middle;
         }
 
-        h1, h2 {
-            font-weight: 300;
-            text-shadow: 0 0 20px var(--shadow);
-            margin: 10px 0;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, var(--accent), #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            opacity: 0.8;
-        }
-
-        /* Controle principal: Layout em cruz (D-pad) usando Flexbox */
-        .control-layout {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            margin: 20px auto;
-        }
-
-        .row {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        /* Centro do controle */
-        .center {
-            width: 100px;
-            height: 100px;
+        .joystick-button {
+            width: 100px; /* Largura dos botões */
+            height: 100px; /* Altura dos botões */
+            border: 6px solid;
             border-radius: 50%;
-            background: linear-gradient(145deg, var(--accent), var(--accent-hover));
-            box-shadow: 0 0 30px var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 30px var(--shadow); }
-            to { box-shadow: 0 0 50px var(--accent); }
-        }
-
-        /* Botões direcionais */
-        .btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #333, #555);
-            border: 2px solid var(--accent);
-            color: var(--text);
-            font-size: 1.5rem;
+            font-size: 18px;
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
         }
 
-        .btn:hover {
-            background: linear-gradient(145deg, #444, #666);
-            transform: scale(1.05);
+        #botao1 {
+            background-color: #3498db; /* Cor 1 */
+            color: #ffffff;
         }
 
-        .btn:active {
-            background: linear-gradient(145deg, var(--accent), var(--accent-hover));
-            /* Removido o recuo: sem scale down ou translateY */
+        #botao1:active {
+            background-color: #2980b9;
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
-        /* Ícones SVG para botões */
-        .btn svg {
-            width: 30px;
-            height: 30px;
-            fill: var(--text);
+        #botao2 {
+            background-color: #ff8c66;
+            color: #ffffff;
         }
 
-        /* Status de conexão */
-        .status {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent);
-            animation: pulse 1s infinite;
+        #botao2:active {
+            background-color: #ff5733;
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        #botao3 {
+            background-color: #1d8348;
+            color: #ffffff;
         }
 
-        /* Footer */
-        footer {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-            text-align: center;
+        #botao3:active {
+            background-color: #27ae60;
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
-        /* Responsividade */
-        @media (max-width: 600px) {
-            .btn {
-                width: 60px;
-                height: 60px;
-                font-size: 1.2rem;
-            }
-            .btn svg {
-                width: 25px;
-                height: 25px;
-            }
-            .center {
-                width: 80px;
-                height: 80px;
-                font-size: 1.5rem;
-            }
-            h1 { font-size: 2rem; }
-            h2 { font-size: 1.2rem; }
+        #botao4 {
+            background-color: #d35400;
+            color: #ffffff;
+        }
+
+        #botao4:active {
+            background-color: #f39c12;
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        #emoji-robô {
+            font-size: 100px; /* Tamanho do emoji do robô */
         }
     </style>
 </head>
 <body unselectable="on" class="prevent-select">
-    <header>
-        <h1> ROBÓTICA DR JOÂO DA ROCHA CHUEIRI</h1>
-        <h2>👾 Robô gerson 👾</h2>
-    </header>
+    <h2 class="prevent-select">&#129302; ROBÓTICA PARANÁ &#129302;</h2>
+    <h2 class="prevent-select">&#x1F3AE; Robô Wireless versão II &#128246;</h2>
 
-    <div class="control-layout">
-        <!-- Linha superior: botão cima -->
-        <div class="row">
-            <button class="btn prevent-select" id="botao1" aria-label="Mover para cima">
-                <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
-            </button>
-        </div>
-        <!-- Linha do meio: esquerda, centro, direita -->
-        <div class="row">
-            <button class="btn prevent-select" id="botao2" aria-label="Mover para esquerda">
-                <svg viewBox="0 0 24 24"><path d="M14 7l-5 5 5 5z"/></svg>
-            </button>
-            <div class="center prevent-select">🎯</div>
-            <button class="btn prevent-select" id="botao3" aria-label="Mover para direita">
-                <svg viewBox="0 0 24 24"><path d="M10 7l5 5-5 5z"/></svg>
-            </button>
-        </div>
-        <!-- Linha inferior: botão baixo -->
-        <div class="row">
-            <button class="btn prevent-select" id="botao4" aria-label="Mover para baixo">
-                <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-        </div>
-    </div>
+    <table class="joystick-table">
+        <tr>
+            <td class="joystick-cell"></td>
+            <td class="joystick-cell"><button class="prevent-select joystick-button" id="botao1"></button></td>
+            <td class="joystick-cell"></td>
+        </tr>
+        <tr>
+            <td class="joystick-cell"><button class="prevent-select joystick-button" id="botao2"></button></td>
+            <td class="joystick-cell"><div id="emoji-robô" class="prevent-select">&#x1F3AE;</div></td>
+            <td class="joystick-cell"><button class="prevent-select joystick-button" id="botao3"></button></td>
+        </tr>
+        <tr>
+            <td class="joystick-cell"></td>
+            <td class="joystick-cell"><button class="prevent-select joystick-button" id="botao4"></button></td>
+            <td class="joystick-cell"></td>
+        </tr>
+    </table>
 
-    <footer>
-        <p>Projeto desenvolvido pelo aluno LUIZ GABRIEL🤭</p>
-    </footer>
+  <footer style="text-align: center; font-size: 0.9em; color: gray; margin-top: 20px;">
+  <p>Projeto desenvolvido com inspiração e contribuição do Prof. Wagner Szpak</p>
+  </footer>
 
-    <script>
-        const botao1 = document.getElementById('botao1');
-        const botao2 = document.getElementById('botao2');
-        const botao3 = document.getElementById('botao3');
-        const botao4 = document.getElementById('botao4');
+<script>
+    const botao1 = document.getElementById('botao1');
+    const botao2 = document.getElementById('botao2');
+    const botao3 = document.getElementById('botao3');
+    const botao4 = document.getElementById('botao4');
 
-        let intervalID = null;
-        let botaoAtivo = null; // Controle do botão ativo
+    let intervalID = null;
+    let botaoAtivo = null; // Variável para controlar o botão pressionado
 
-        function iniciarAcao(botao, comando) {
-            if (botaoAtivo === null) {
-                botaoAtivo = botao;
-                // Feedback visual adicional (opcional: vibração simulada)
-                if (navigator.vibrate) navigator.vibrate(50);
-                intervalID = setInterval(() => {
-                    fetch('/pressionado', { method: 'POST', body: comando });
-                }, 100);
-            }
+    function iniciarAcao(botao, comando, corPressionado, corSolto) {
+        if (botaoAtivo === null) {
+            botaoAtivo = botao; // Define o botão ativo
+            botao.style.backgroundColor = corPressionado;
+            botao.style.transform = 'translateY(2px)';
+            botao.style.boxShadow = 'none';
+            intervalID = setInterval(() => {
+                fetch('/pressionado', { method: 'POST', body: comando });
+            }, 100);
         }
+    }
 
-        function pararAcao(botao) {
-            if (botaoAtivo === botao) {
-                clearInterval(intervalID);
-                fetch('/pressionado', { method: 'POST', body: '0' });
-                botaoAtivo = null;
-            }
+    function pararAcao(botao, corSolto) {
+        if (botaoAtivo === botao) { // Só libera se for o botão ativo
+            botao.style.backgroundColor = corSolto;
+            botao.style.transform = 'translateY(0)';
+            botao.style.boxShadow = 'none';
+            clearInterval(intervalID);
+            fetch('/pressionado', { method: 'POST', body: '0' }); // Envia o comando de parada
+            botaoAtivo = null; // Libera para que outro botão possa ser pressionado
         }
+    }
 
-        // Eventos para toque e mouse
-        [botao1, botao2, botao3, botao4].forEach((botao, index) => {
-            const comando = (index + 1).toString();
-            botao.addEventListener('touchstart', (e) => { e.preventDefault(); iniciarAcao(botao, comando); });
-            botao.addEventListener('touchend', () => pararAcao(botao));
-            botao.addEventListener('mousedown', () => iniciarAcao(botao, comando));
-            botao.addEventListener('mouseup', () => pararAcao(botao));
-            botao.addEventListener('mouseleave', () => pararAcao(botao)); // Para mouse sair
-        });
-    </script>
+    // Funções de eventos para cada botão
+    botao1.addEventListener('touchstart', () => iniciarAcao(botao1, '1', '#2980b9', '#3498db'));
+    botao1.addEventListener('touchend', () => pararAcao(botao1, '#3498db'));
+
+    botao2.addEventListener('touchstart', () => iniciarAcao(botao2, '2', '#ff8c66', '#ff5733'));
+    botao2.addEventListener('touchend', () => pararAcao(botao2, '#ff5733'));
+
+    botao3.addEventListener('touchstart', () => iniciarAcao(botao3, '3', '#1d8348', '#27ae60'));
+    botao3.addEventListener('touchend', () => pararAcao(botao3, '#27ae60'));
+
+    botao4.addEventListener('touchstart', () => iniciarAcao(botao4, '4', '#d35400', '#f39c12'));
+    botao4.addEventListener('touchend', () => pararAcao(botao4, '#f39c12'));
+</script>
+
 </body>
 </html>
+
+)===";
